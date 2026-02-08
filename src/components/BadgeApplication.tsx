@@ -51,11 +51,33 @@ export default function BadgeApplication({ onApplicationSubmit }: BadgeApplicati
   const handleSubmit = async () => {
     setSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      // Submit to Formspree
+      const response = await fetch('https://formspree.io/f/mldgnwvn', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          _subject: `🛡️ New Founding Operative Application: ${formData.name}`,
+          applicationId: `APP-${Date.now().toString(36).toUpperCase()}`,
+          submittedAt: new Date().toISOString(),
+        }),
+      });
+
+      if (response.ok) {
+        onApplicationSubmit?.(formData);
+        setSubmitted(true);
+      } else {
+        alert('Failed to submit application. Please try again.');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('Failed to submit application. Please try again.');
+    }
     
-    onApplicationSubmit?.(formData);
-    setSubmitted(true);
     setSubmitting(false);
   };
 
