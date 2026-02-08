@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// In-memory counter (resets on cold start, but gives us a starting point)
-// In production, this would be Vercel KV or Upstash Redis
-let operativeCount = 47;
+// In-memory counter (resets on cold start)
+// Starts at 0 — honest count until we have real persistence (Vercel KV or Upstash Redis)
+// "0 of 100" creates genuine urgency: first is compelling, forty-eighth is not
+let operativeCount = 0;
 const operatives: Set<string> = new Set();
 
 export async function GET() {
