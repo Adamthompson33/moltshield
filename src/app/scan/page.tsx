@@ -49,12 +49,20 @@ export default function Home() {
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 860, margin: '0 auto', padding: '24px 20px 80px' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 40, paddingTop: 20 }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 10,
-            marginBottom: 12,
-          }}>
+          {/* Back to home link */}
+          <a
+            href="/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 10,
+              marginBottom: 12,
+              textDecoration: 'none',
+              transition: 'opacity 0.2s',
+            }}
+            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = '0.8')}
+            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = '1')}
+          >
             <div style={{
               width: 10,
               height: 10,
@@ -81,7 +89,7 @@ export default function Home() {
               boxShadow: '0 0 12px #3b82f688',
               animation: 'pulse 2s ease-in-out infinite 1s',
             }} />
-          </div>
+          </a>
           <h1 style={{
             fontSize: 28,
             fontWeight: 700,
@@ -329,10 +337,10 @@ export default function Home() {
             gap: 16,
             marginTop: 8,
           }}>
-            <a href="https://docs.moltcops.com" style={{ color: '#4b5563', cursor: 'pointer' }}>Docs</a>
-            <a href="https://github.com/moltcops" style={{ color: '#4b5563', cursor: 'pointer' }}>GitHub</a>
-            <a href="https://twitter.com/moltcops" style={{ color: '#4b5563', cursor: 'pointer' }}>Twitter</a>
-            <a href="https://moltcops.com/litepaper" style={{ color: '#4b5563', cursor: 'pointer' }}>Litepaper</a>
+            <a href="/" style={{ color: '#4b5563', textDecoration: 'none' }}>Home</a>
+            <a href="https://github.com/Adamthompson33/moltshield" style={{ color: '#4b5563', textDecoration: 'none' }}>GitHub</a>
+            <a href="https://x.com/moltcops" style={{ color: '#4b5563', textDecoration: 'none' }}>Twitter</a>
+            <a href="/litepaper" style={{ color: '#4b5563', textDecoration: 'none' }}>Litepaper</a>
           </div>
         </div>
       </div>

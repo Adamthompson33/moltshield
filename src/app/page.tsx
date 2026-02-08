@@ -172,8 +172,8 @@ export default function MoltCopsLanding() {
           <div style={{ display: "flex", gap: 24, fontSize: 12, letterSpacing: 0.5 }}>
             {[
               ["Scan", "/scan"],
-              ["GitHub", "https://github.com/Adamthompson33/moltshield"],
-              ["Litepaper", "#litepaper"],
+              ["Matrix", "/scan?tab=matrix"],
+              ["Litepaper", "/litepaper"],
               ["Badge", "/scan?tab=badge"],
             ].map(([label, href]) => (
               <a
@@ -660,7 +660,7 @@ export default function MoltCopsLanding() {
                 ["Scanner", "/scan"],
                 ["GitHub", "https://github.com/Adamthompson33/moltshield"],
                 ["Twitter", "https://x.com/moltcops"],
-                ["Litepaper", "#litepaper"],
+                ["Litepaper", "/litepaper"],
               ].map(([label, href]) => (
                 <a
                   key={label}

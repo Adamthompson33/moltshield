@@ -7,8 +7,8 @@ export default function EnlistPage() {
   const router = useRouter();
   
   useEffect(() => {
-    // Redirect to home with matrix tab
-    router.push('/?tab=matrix');
+    // Redirect to scan page with matrix tab
+    router.push('/scan?tab=matrix');
   }, [router]);
 
   return (
