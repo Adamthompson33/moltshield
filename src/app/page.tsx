@@ -5,12 +5,22 @@ import './globals.css';
 import Scanner from '@/components/Scanner';
 import BadgeApplication from '@/components/BadgeApplication';
 import Waitlist from '@/components/Waitlist';
+import DefenseMatrix from '@/components/DefenseMatrix';
 
 const BASE_SCAN_COUNT = 1247;
 
 export default function Home() {
   const [globalScans, setGlobalScans] = useState(BASE_SCAN_COUNT);
-  const [activeTab, setActiveTab] = useState<'scan' | 'badge' | 'waitlist'>('scan');
+  const [activeTab, setActiveTab] = useState<'scan' | 'matrix' | 'badge' | 'waitlist'>('scan');
+
+  useEffect(() => {
+    // Check for tab query parameter
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab && ['scan', 'matrix', 'badge', 'waitlist'].includes(tab)) {
+      setActiveTab(tab as typeof activeTab);
+    }
+  }, []);
 
   useEffect(() => {
     // Simulate growing scan count
@@ -120,6 +130,7 @@ export default function Home() {
         }}>
           {[
             { id: 'scan', label: 'Scanner', icon: '🔍' },
+            { id: 'matrix', label: 'Defense Matrix', icon: '🚨' },
             { id: 'badge', label: 'Badge', icon: '🛡️' },
             { id: 'waitlist', label: 'Waitlist', icon: '🎫' },
           ].map(tab => (
@@ -212,6 +223,12 @@ export default function Home() {
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'matrix' && (
+          <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
+            <DefenseMatrix />
           </div>
         )}
 
