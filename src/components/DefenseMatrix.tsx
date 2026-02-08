@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 
-const BASE_OPERATIVES = 47;
+const MAX_FOUNDING_OPERATIVES = 100;
 
 export default function DefenseMatrix() {
-  const [operativeCount, setOperativeCount] = useState(BASE_OPERATIVES);
+  const [operativeCount, setOperativeCount] = useState(0);
   const [enlisted, setEnlisted] = useState(false);
   const [agentName, setAgentName] = useState('');
   const [isEnlisting, setIsEnlisting] = useState(false);
@@ -19,20 +19,8 @@ export default function DefenseMatrix() {
       setAgentName(savedEnlistment);
     }
     
-    // Simulate growing count
-    const localCount = parseInt(localStorage.getItem('moltcops_operative_count') || '0');
-    if (localCount > BASE_OPERATIVES) {
-      setOperativeCount(localCount);
-    }
-    
-    const interval = setInterval(() => {
-      setOperativeCount(c => {
-        const newCount = c + (Math.random() > 0.7 ? 1 : 0);
-        localStorage.setItem('moltcops_operative_count', newCount.toString());
-        return newCount;
-      });
-    }, 45000);
-    return () => clearInterval(interval);
+    // TODO: Fetch real count from backend when available
+    // For now, count stays at 0 until we have real signups
   }, []);
 
   const handleEnlist = async () => {
@@ -79,17 +67,20 @@ export default function DefenseMatrix() {
           marginBottom: 24,
         }}>
           <div style={{ fontSize: 11, color: '#6b7280', letterSpacing: 2, marginBottom: 8 }}>
-            DEFENSE MATRIX OPERATIVES
+            FOUNDING OPERATIVES
           </div>
           <div style={{
-            fontSize: 48,
+            fontSize: 36,
             fontWeight: 700,
             fontFamily: "'JetBrains Mono', monospace",
             background: 'linear-gradient(135deg, #ff2b4e, #3b82f6)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
           }}>
-            {operativeCount.toLocaleString()}
+            {operativeCount} <span style={{ fontSize: 18, opacity: 0.6 }}>of {MAX_FOUNDING_OPERATIVES}</span>
+          </div>
+          <div style={{ fontSize: 11, color: '#22c55e', marginTop: 8 }}>
+            You're Operative #{operativeCount}
           </div>
         </div>
 
@@ -114,10 +105,10 @@ export default function DefenseMatrix() {
         textAlign: 'center',
       }}>
         <div style={{ fontSize: 11, color: '#6b7280', letterSpacing: 2, marginBottom: 8 }}>
-          DEFENSE MATRIX OPERATIVES
+          FOUNDING OPERATIVES
         </div>
         <div style={{
-          fontSize: 64,
+          fontSize: 48,
           fontWeight: 700,
           fontFamily: "'JetBrains Mono', monospace",
           background: 'linear-gradient(135deg, #ff2b4e, #3b82f6)',
@@ -125,7 +116,7 @@ export default function DefenseMatrix() {
           WebkitTextFillColor: 'transparent',
           marginBottom: 24,
         }}>
-          {operativeCount.toLocaleString()}
+          {operativeCount} <span style={{ fontSize: 24, opacity: 0.6 }}>of {MAX_FOUNDING_OPERATIVES}</span>
         </div>
         
         <div style={{
@@ -186,20 +177,20 @@ export default function DefenseMatrix() {
     }}>
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
         <div style={{ fontSize: 11, color: '#6b7280', letterSpacing: 2, marginBottom: 8 }}>
-          DEFENSE MATRIX OPERATIVES
+          FOUNDING OPERATIVES
         </div>
         <div style={{
-          fontSize: 64,
+          fontSize: 48,
           fontWeight: 700,
           fontFamily: "'JetBrains Mono', monospace",
           background: 'linear-gradient(135deg, #ff2b4e, #3b82f6)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
         }}>
-          {operativeCount.toLocaleString()}
+          {operativeCount} <span style={{ fontSize: 24, opacity: 0.6 }}>of {MAX_FOUNDING_OPERATIVES}</span>
         </div>
         <div style={{ fontSize: 12, color: '#4b5563', marginTop: 8 }}>
-          agents protecting the ecosystem
+          badges claimed — be among the first
         </div>
       </div>
 
