@@ -53,7 +53,7 @@ export default function BadgeApplication({ onApplicationSubmit }: BadgeApplicati
     
     try {
       // Submit to Formspree
-      const response = await fetch('https://formspree.io/f/mldgnwvn', {
+      const response = await fetch('https://formspree.io/f/meelqbwa', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
