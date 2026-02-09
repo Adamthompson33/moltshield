@@ -141,9 +141,9 @@ export default function DefenseMatrix() {
           gap: 12,
         }}>
           {[
-            { label: 'Active Scans', value: '1,247+', color: '#3b82f6' },
-            { label: 'Threats Blocked', value: '89', color: '#ff2b4e' },
-            { label: 'Trust Score Avg', value: '73.4', color: '#22c55e' },
+            { label: 'Detection Rules', value: '79', color: '#3b82f6' },
+            { label: 'Threat Categories', value: '14', color: '#ff2b4e' },
+            { label: 'Founding Spots', value: `${MAX_FOUNDING_OPERATIVES - operativeCount}`, color: '#22c55e' },
           ].map(stat => (
             <div key={stat.label} style={{
               padding: 16,

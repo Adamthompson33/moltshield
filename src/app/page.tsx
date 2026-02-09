@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react";
 // MOLTCOPS.COM — Landing Page
 // ═══════════════════════════════════════════════════════════════
 
-const SCAN_BASE = 1247;
+const SCAN_BASE = 0;
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -103,9 +103,10 @@ export default function MoltCopsLanding() {
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
 
+  // Scan count tracks real scans via localStorage — no fake increments
   useEffect(() => {
-    const i = setInterval(() => setScanCount((c) => c + Math.floor(Math.random() * 2)), 45000);
-    return () => clearInterval(i);
+    const real = parseInt(localStorage.getItem('moltcops_scan_count') || '0', 10);
+    setScanCount(real);
   }, []);
 
   const handleWaitlist = async (e: React.FormEvent) => {
@@ -206,7 +207,7 @@ export default function MoltCopsLanding() {
               letterSpacing: 1,
             }}>
               <span style={{ color: "#22c55e" }}>●</span>{" "}
-              {scanCount.toLocaleString()} scans completed
+              {scanCount > 0 ? `${scanCount.toLocaleString()} scans completed` : 'Ready to scan'}
             </div>
 
             <h1 style={{

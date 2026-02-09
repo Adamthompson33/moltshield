@@ -7,7 +7,7 @@ import BadgeApplication from '@/components/BadgeApplication';
 import Waitlist from '@/components/Waitlist';
 import DefenseMatrix from '@/components/DefenseMatrix';
 
-const BASE_SCAN_COUNT = 1247;
+const BASE_SCAN_COUNT = 0;
 
 export default function Home() {
   const [globalScans, setGlobalScans] = useState(BASE_SCAN_COUNT);
@@ -23,11 +23,9 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Simulate growing scan count
-    const interval = setInterval(() => {
-      setGlobalScans((c) => c + Math.floor(Math.random() * 3));
-    }, 30000);
-    return () => clearInterval(interval);
+    // Load real scan count from localStorage
+    const real = parseInt(localStorage.getItem('moltcops_scan_count') || '0', 10);
+    setGlobalScans(real);
   }, []);
 
   return (
@@ -126,7 +124,7 @@ export default function Home() {
           fontFamily: "'JetBrains Mono', monospace",
         }}>
           <span style={{ color: '#22c55e' }}>●</span>{' '}
-          {globalScans.toLocaleString()} scans completed globally
+          {globalScans > 0 ? `${globalScans.toLocaleString()} scans completed` : 'Ready to scan'}
         </div>
 
         {/* Tab navigation */}

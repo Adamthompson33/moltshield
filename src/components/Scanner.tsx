@@ -48,7 +48,11 @@ export default function Scanner({ onScanComplete, globalScans, setGlobalScans }:
         const scanResult = runScan(code);
         setResult(scanResult);
         setScanning(false);
-        setGlobalScans((c) => c + 1);
+        setGlobalScans((c) => {
+          const next = c + 1;
+          localStorage.setItem('moltcops_scan_count', String(next));
+          return next;
+        });
         onScanComplete?.(scanResult);
       }
     }, 60);
