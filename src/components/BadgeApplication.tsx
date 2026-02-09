@@ -52,16 +52,17 @@ export default function BadgeApplication({ onApplicationSubmit }: BadgeApplicati
     setSubmitting(true);
     
     try {
-      // Submit to Formspree
-      const response = await fetch('https://formspree.io/f/meelqbwa', {
+      // Submit to Web3Forms
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
         body: JSON.stringify({
+          access_key: '2d1d577e-9d9d-456b-91ae-9a0347b7bcca',
           ...formData,
-          _subject: `🛡️ New Founding Operative Application: ${formData.name}`,
+          subject: `New Founding Operative Application: ${formData.name}`,
           applicationId: `APP-${Date.now().toString(36).toUpperCase()}`,
           submittedAt: new Date().toISOString(),
         }),

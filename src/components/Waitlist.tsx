@@ -14,7 +14,7 @@ export default function Waitlist({ onSignup }: WaitlistProps) {
   const [myReferralCode, setMyReferralCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [waitlistPosition, setWaitlistPosition] = useState(0);
-  const [totalSignups, setTotalSignups] = useState(847); // Base number
+  const [totalSignups, setTotalSignups] = useState(0); // Real count only
 
   useEffect(() => {
     // Check for referral code in URL
@@ -22,11 +22,7 @@ export default function Waitlist({ onSignup }: WaitlistProps) {
     const ref = params.get('ref');
     if (ref) setReferralCode(ref);
 
-    // Simulate growing waitlist
-    const interval = setInterval(() => {
-      setTotalSignups(prev => prev + Math.floor(Math.random() * 2));
-    }, 45000);
-    return () => clearInterval(interval);
+    // No fake increments — real count only
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,8 +31,13 @@ export default function Waitlist({ onSignup }: WaitlistProps) {
 
     setSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1200));
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_key: '2d1d577e-9d9d-456b-91ae-9a0347b7bcca', email, subject: 'MoltCops Waitlist Signup', type: 'waitlist', referralCode: referralCode || '', timestamp: new Date().toISOString() }),
+      });
+    } catch { /* continue anyway */ }
     
     // Generate referral code
     const code = `MCOP${Date.now().toString(36).toUpperCase().slice(-6)}`;

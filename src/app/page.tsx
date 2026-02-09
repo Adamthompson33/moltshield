@@ -113,10 +113,10 @@ export default function MoltCopsLanding() {
     e.preventDefault();
     if (!email) return;
     try {
-      await fetch("https://formspree.io/f/meelqbwa", {
+      await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, type: "waitlist", timestamp: new Date().toISOString() }),
+        body: JSON.stringify({ access_key: "2d1d577e-9d9d-456b-91ae-9a0347b7bcca", email, subject: "MoltCops Waitlist Signup", type: "waitlist", timestamp: new Date().toISOString() }),
       });
       setEmailSubmitted(true);
     } catch {
