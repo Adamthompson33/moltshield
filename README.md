@@ -50,16 +50,50 @@ scanner-app/
 └── next.config.js
 ```
 
-## Scanner Rules (Free Tier)
+## GitHub Action
 
-The free tier runs 20 of 79 total rules:
+Add MoltCops to your CI pipeline — scans every PR for agent vulnerabilities:
 
+```yaml
+# .github/workflows/moltcops-scan.yml
+name: MoltCops Security Scan
+on:
+  pull_request:
+    paths: ['**/*.ts', '**/*.js', '**/*.py', '**/*.md']
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Adamthompson33/moltshield@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # api-key: ${{ secrets.MOLTCOPS_PRO_KEY }}  # Optional: Pro tier
+          # fail-on: CRITICAL  # Optional: block PRs with critical findings
+```
+
+**Free tier:** 10 rules — catches drains, sleepers, prompt injection, code injection, exfil.
+**Pro tier:** 20 rules — adds jailbreak, encoding tricks, context poisoning, sandbox escape, and more.
+
+## Scanner Rules
+
+### Free Tier (10 rules)
 - **CRITICAL** — Key export, drain patterns, unlimited approvals, sleeper triggers
-- **HIGH** — Prompt injection, identity spoofing, authority bypass, jailbreaks
-- **MEDIUM** — Context poisoning, data exfil, sandbox escape, code injection
+- **HIGH** — Prompt injection, safety removal
+- **MEDIUM** — Data exfil, stealth operations, code injection
 - **LOW** — Hardcoded addresses
 
-Full 79-rule engine available via $MCOP staking or x402 micropayment.
+### Pro Tier (+10 rules)
+- **CRITICAL** — MAX_UINT256 detection
+- **HIGH** — Identity spoofing, authority bypass, jailbreaks, encoding tricks, false authority
+- **MEDIUM** — Context poisoning, sandbox escape, time/count triggers, config exposure
+
+Pro tier available via API key ($5/month).
 
 ## Links
 

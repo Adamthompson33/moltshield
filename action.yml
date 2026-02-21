@@ -1,0 +1,33 @@
+name: 'MoltCops Security Scanner'
+description: 'Scan AI agent skills for prompt injection, wallet drains, sleeper triggers, and 17+ vulnerability patterns'
+author: 'MoltCops'
+
+branding:
+  icon: 'shield'
+  color: 'orange'
+
+inputs:
+  github-token:
+    description: 'GitHub token for posting PR comments'
+    required: true
+    default: ${{ github.token }}
+  api-url:
+    description: 'MoltCops scan API endpoint'
+    required: false
+    default: 'https://scan.moltcops.com/api/scan'
+  api-key:
+    description: 'MoltCops Pro API key (optional — unlocks full 20-rule scan)'
+    required: false
+    default: ''
+  file-patterns:
+    description: 'Glob patterns for files to scan (comma-separated)'
+    required: false
+    default: '**/*.ts,**/*.js,**/*.py,**/*.md'
+  fail-on:
+    description: 'Fail the check if findings at this severity or above (CRITICAL, HIGH, MEDIUM, LOW, none)'
+    required: false
+    default: 'none'
+
+runs:
+  using: 'node20'
+  main: 'action/dist/index.js'
