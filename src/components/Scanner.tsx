@@ -68,7 +68,7 @@ export default function Scanner({ onScanComplete, globalScans, setGlobalScans }:
     if (!result) return;
     const report = [
       `MoltShield Scan Report — ${result.scanId}`,
-      `Score: ${result.score}/100 | Tier: ${result.tier}`,
+      `Score: ${result.score}/100 | Tier: ${result.trustTier}`,
       `Findings: ${result.stats.critical}C ${result.stats.high}H ${result.stats.medium}M ${result.stats.low}L`,
       ``,
       ...result.findings.map(
@@ -85,7 +85,7 @@ export default function Scanner({ onScanComplete, globalScans, setGlobalScans }:
 
   const shareOnX = () => {
     if (!result) return;
-    const text = `🔴 MoltShield scanned my agent code:\n\nScore: ${result.score}/100 (${result.tier})\nFindings: ${result.stats.critical} critical, ${result.stats.high} high, ${result.stats.medium} medium\n\nFree scan at moltcops.com/scan`;
+    const text = `🔴 MoltShield scanned my agent code:\n\nScore: ${result.score}/100 (${result.trustTier})\nFindings: ${result.stats.critical} critical, ${result.stats.high} high, ${result.stats.medium} medium\n\nFree scan at moltcops.com/scan`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -291,10 +291,10 @@ export async function handleRequest(input: string) {
                   <div style={{
                     fontSize: 18,
                     fontWeight: 700,
-                    color: TIER_CONFIG[result.tier]?.color || "#fff",
+                    color: TIER_CONFIG[result.trustTier]?.color || "#fff",
                     marginBottom: 4,
                   }}>
-                    {result.tier}
+                    {result.trustTier}
                   </div>
                   <div style={{
                     fontSize: 12,
@@ -302,7 +302,7 @@ export async function handleRequest(input: string) {
                     maxWidth: 280,
                     lineHeight: 1.5,
                   }}>
-                    {TIER_CONFIG[result.tier]?.desc}
+                    {TIER_CONFIG[result.trustTier]?.desc}
                   </div>
                 </div>
               </div>
@@ -357,9 +357,9 @@ export async function handleRequest(input: string) {
               fontFamily: "'JetBrains Mono', monospace",
             }}>
               <span>ID: {result.scanId}</span>
-              <span>{result.stats.rulesChecked} rules checked</span>
+              <span>{result.stats.rulesChecked} of {result.stats.totalRulesAvailable} rules checked</span>
               <span>{code.split("\n").length} lines scanned</span>
-              <span style={{ marginLeft: "auto" }}>Free tier — 20 of 79 rules</span>
+              <span style={{ marginLeft: "auto" }}>Free tier — {result.stats.rulesChecked} of {result.stats.totalRulesAvailable} rules</span>
             </div>
           </div>
 

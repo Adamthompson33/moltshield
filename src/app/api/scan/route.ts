@@ -1,5 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { runScan, SCAN_RULES } from '@/lib/scan-engine';
+import { runScan, SCAN_RULES, FREE_RULES, PRO_RULES, ScanTier } from '@/lib/scan-engine';
+
+// ═══════════════════════════════════════════════════════════════
+// PRO TIER AUTH
+// For now: API key in X-MoltCops-Key header
+// Future: x402 micropayment per scan ($0.01)
+// ═══════════════════════════════════════════════════════════════
+
+const PRO_API_KEYS = new Set(
+  (process.env.MOLTCOPS_PRO_KEYS || '').split(',').filter(Boolean)
+);
+
+function authenticateTier(request: NextRequest): ScanTier {
+  const apiKey = request.headers.get('x-moltcops-key') || request.headers.get('authorization')?.replace('Bearer ', '');
+  if (apiKey && PRO_API_KEYS.has(apiKey)) return 'pro';
+  // Future: check x402 payment receipt here
+  return 'free';
+}
 
 // ═══════════════════════════════════════════════════════════════
 // MOLTSHIELD SCAN API — Server-side scanning endpoint
@@ -52,16 +69,24 @@ function getClientIP(request: NextRequest): string {
 }
 
 // GET - Return API info and rule count
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const tier = authenticateTier(request);
   return NextResponse.json({
     success: true,
     name: 'MoltShield Scan API',
-    version: '1.0.0',
-    rulesCount: SCAN_RULES.length,
+    version: '2.0.0',
+    tier,
+    rulesCount: tier === 'pro' ? PRO_RULES.length : FREE_RULES.length,
+    totalRules: SCAN_RULES.length,
     description: 'Server-side skill code security scanner',
+    pricing: {
+      free: { rules: FREE_RULES.length, cost: '$0' },
+      pro: { rules: PRO_RULES.length, cost: '$0.01/scan or $5/month' },
+    },
     usage: {
       method: 'POST',
       body: '{ "code": "your skill code here" }',
+      headers: 'X-MoltCops-Key: <your-pro-key> (optional, for Pro tier)',
       rateLimit: `${RATE_LIMIT} requests per minute`,
     },
   });
@@ -121,19 +146,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Run the scan
-    const result = runScan(code);
+    // Determine tier from auth
+    const tier = authenticateTier(request);
+
+    // Run the scan with appropriate tier
+    const result = runScan(code, tier);
+
+    // Add upgrade hint for free tier
+    const upgradeHint = tier === 'free' ? {
+      upgrade: {
+        message: `Scanned with ${FREE_RULES.length} free rules. Upgrade to Pro for ${PRO_RULES.length} rules including encoding tricks, jailbreak detection, context poisoning, and more.`,
+        proRulesCount: PRO_RULES.length,
+        missedCategories: PRO_RULES.filter(r => r.tier === 'pro').map(r => r.category),
+      },
+    } : {};
 
     // Return result with rate limit headers
     return NextResponse.json(
       {
         success: true,
         ...result,
+        ...upgradeHint,
       },
       {
         headers: {
           'X-RateLimit-Limit': String(RATE_LIMIT),
           'X-RateLimit-Remaining': String(rateCheck.remaining),
+          'X-MoltCops-Tier': tier,
         },
       }
     );
