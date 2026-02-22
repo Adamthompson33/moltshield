@@ -1,0 +1,29 @@
+name: MoltCops Security Scan
+
+on:
+  pull_request:
+    paths:
+      - '**/*.ts'
+      - '**/*.js'
+      - '**/*.py'
+      - '**/*.md'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    name: Scan agent skills for vulnerabilities
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: MoltCops Scan
+        uses: Adamthompson33/moltshield@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Uncomment for Pro tier (full 20-rule scan):
+          # api-key: ${{ secrets.MOLTCOPS_PRO_KEY }}
+          # Fail PR on critical findings:
+          # fail-on: CRITICAL
