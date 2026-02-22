@@ -1,6 +1,8 @@
 // @ts-nocheck
 'use client';
 
+import { useState } from 'react';
+
 // ═══════════════════════════════════════════════════════════════
 // MOLTCOPS PRICING — Free vs Pro
 // No marketing fluff. Security tools sell on trust, not hype.
@@ -40,6 +42,29 @@ const SEVERITY_COLOR: Record<string, string> = {
 };
 
 export default function PricingPage() {
+  const [loading, setLoading] = useState(false);
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const success = searchParams?.get('success');
+  const cancelled = searchParams?.get('cancelled');
+
+  const handleGetPro = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/stripe/checkout', { method: 'POST' });
+      const data = await res.json();
+      if (data.success && data.url) {
+        window.location.href = data.url;
+      } else {
+        // Stripe not configured yet — fallback to email
+        window.location.href = 'mailto:si@moltcops.com?subject=MoltCops%20Pro&body=I%20want%20Pro%20access.%20GitHub%20username%3A%20';
+      }
+    } catch {
+      window.location.href = 'mailto:si@moltcops.com?subject=MoltCops%20Pro&body=I%20want%20Pro%20access.%20GitHub%20username%3A%20';
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -49,6 +74,39 @@ export default function PricingPage() {
       padding: '60px 20px',
     }}>
       <div style={{ maxWidth: 960, margin: '0 auto' }}>
+
+        {/* Success/Cancelled Banners */}
+        {success && (
+          <div style={{
+            background: '#052e16',
+            border: '1px solid #22c55e',
+            borderRadius: 8,
+            padding: '16px 24px',
+            marginBottom: 32,
+            textAlign: 'center',
+          }}>
+            <p style={{ color: '#22c55e', fontSize: 16, fontWeight: 600, margin: 0 }}>
+              🎉 Welcome to MoltCops Pro! Your API key is on its way to your email.
+            </p>
+            <p style={{ color: '#86efac', fontSize: 13, marginTop: 8, marginBottom: 0 }}>
+              Add it to your GitHub Action config as MOLTCOPS_PRO_KEY to unlock full 20-rule scans.
+            </p>
+          </div>
+        )}
+        {cancelled && (
+          <div style={{
+            background: '#1c1917',
+            border: '1px solid #78716c',
+            borderRadius: 8,
+            padding: '16px 24px',
+            marginBottom: 32,
+            textAlign: 'center',
+          }}>
+            <p style={{ color: '#a8a29e', fontSize: 14, margin: 0 }}>
+              Checkout cancelled. No worries — Free tier is still running.
+            </p>
+          </div>
+        )}
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 60 }}>
@@ -215,22 +273,26 @@ export default function PricingPage() {
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <a href="mailto:si@moltcops.com?subject=MoltCops%20Pro&body=I%20want%20Pro%20access.%20GitHub%20username%3A%20" style={{
-                display: 'block',
-                textAlign: 'center',
-                padding: '12px 24px',
-                background: '#f97316',
-                color: '#000',
-                borderRadius: 8,
-                textDecoration: 'none',
-                fontSize: 15,
-                fontWeight: 700,
-                border: 'none',
-              }}>
-                Get Pro →
-              </a>
+              <button
+                onClick={handleGetPro}
+                disabled={loading}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  textAlign: 'center',
+                  padding: '12px 24px',
+                  background: loading ? '#a35209' : '#f97316',
+                  color: '#000',
+                  borderRadius: 8,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  border: 'none',
+                  cursor: loading ? 'wait' : 'pointer',
+                }}>
+                {loading ? 'Loading...' : 'Get Pro → $5/month'}
+              </button>
               <p style={{ fontSize: 12, color: '#666', textAlign: 'center' }}>
-                API key delivered within 24h · Full scan access · Priority support
+                API key delivered instantly · Full scan access · Cancel anytime
               </p>
             </div>
           </div>
